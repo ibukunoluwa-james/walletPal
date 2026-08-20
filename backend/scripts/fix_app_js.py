@@ -71,5 +71,12 @@ new_block = [
 
 # Build new lines: keep everything before start, then new_block, then from end onwards (including app.get line)
 new_lines = lines[:start] + new_block + lines[end:]
+
+# backup = p.with_name(p.name + ".bak")
+# backup.write_text(text)
+
+# save original contents to src/app.js.bak 
 p.write_text("\n".join(new_lines) + "\n")
-print(f"Replaced lines {start+1}-{end} in src/app.js with security block. Backup is src/app.js.bak")
+print(f"Replaced lines {start+1}-{end} in src.app.js with security block.")
+
+
