@@ -10,6 +10,8 @@
 import express from 'express';
 import cors from 'cors';
 
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { config, authMode } from './config.js';
 import { authenticate } from './middleware/auth.js';
 import { walletsRouter } from './routes/wallets.js';
@@ -20,8 +22,36 @@ import { AppError } from './lib/errors.js';
 export function createApp() {
   const app = express();
 
-  app.use(cors());
-  app.use(express.json());
+// --- SECURITY: basic hardening middleware (added by security/quick-hardening) ---
+app.use(helmet());
+
+const corsWhitelist = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  // add your deployed frontend origin(s) here when you deploy
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // allow non-browser tools like curl/postman (null origin)
+    if (!origin) return callback(null, true);
+    if (corsWhitelist.indexOf(origin) !== -1) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
+}));
+
+app.use(express.json());
+
+// Basic API rate limiter
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 200,            // per IP
+  standardHeaders: true,
+  legacyHeaders: false
+});
+app.use('/api/', apiLimiter);
+// --- end security block ---
 
   app.get('/', (_req, res) => {
     res.json({
