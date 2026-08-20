@@ -1,0 +1,20 @@
+{
+  "name": "walletpals-backend",
+  "version": "1.0.0",
+  "description": "WalletPals backend — shared savings wallets, goals, contributions and leaderboards",
+  "type": "module",
+  "main": "src/index.js",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test \"test/**/*.test.js\""
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "jose": "^5.9.6"
+  }
+}

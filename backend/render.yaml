@@ -1,0 +1,25 @@
+# Single Node service. This folder is self-contained — point Render's
+# "Root Directory" at it and nothing outside is needed to build or run.
+#
+# Render only auto-discovers render.yaml at the REPOSITORY root. If this folder
+# is not the repo root, create the service manually (New > Web Service, set Root
+# Directory) rather than using the Blueprint flow.
+services:
+  - type: web
+    name: walletpals-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      # Set in the Render dashboard — never committed. Supply whichever matches
+      # how your Supabase project signs tokens.
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      # Must stay false in any public deployment: dev tokens let a caller claim
+      # any identity.
+      - key: ALLOW_DEV_AUTH
+        value: false
